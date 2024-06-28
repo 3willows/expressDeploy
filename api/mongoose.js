@@ -1,3 +1,5 @@
+// Tutorial source: https://mongoosejs.com/docs/
+
 const mongoose = require('mongoose');
 
 main().catch(err => console.log(err));
