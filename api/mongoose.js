@@ -30,4 +30,9 @@ console.log(silence.name); // 'Silence'
 const fluffy = new Kitten({ name: 'fluffy' });
 fluffy.speak(); // "Meow name is fluffy"
 
-// await fluffy.save();
+
+async function doSomething() {
+  await fluffy.save();
+}
+
+doSomething()
