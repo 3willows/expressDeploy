@@ -44,7 +44,7 @@ Kitten.countDocuments().then((count) => {
 
 app.get("/", function (req, res) {
   res.send(
-    `Hello!  I am a deployed express App!  Hello to ${fluffy.name}!  There are ${numOfEntries} in the Mongo Database.`
+    `Hello!  I am a deployed express App!  Hello to ${fluffy.name}!  There are ${numOfEntries} documents in the Kittens collection.`
   )
 })
 
