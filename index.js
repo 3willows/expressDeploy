@@ -1,5 +1,7 @@
 require("dotenv").config()
 
+// express set up
+
 const port = process.env.PORT
 
 const express = require("express")
@@ -10,18 +12,15 @@ app.use(express.json())
 
 app.listen(port, () => console.log(`Server ready on port ${port}.`))
 
-let result
+// mongoose set up
 
-app.post('/', (req, res) => {
-  result = req.body.name
-  console.log(result)
-})
 const uri = process.env.DB_URL
 const mongoose = require("mongoose")
 
 async function main() {
   try {
-    await mongoose.connect(uri, {dbName: "people"})
+    await mongoose.connect(uri, { dbName: "people" })
+    console.log("connected!")
   } catch {
     console.log("error in connecting to database")
   }
@@ -37,26 +36,30 @@ const JudgeSchema = new Schema({
 
 const Court = mongoose.model("legal", JudgeSchema)
 
-async function action() {
-  if (result) {
+// mongoose actions
+
+async function addName() {
+  if (postRequestName) {
     Court.create({
-      name : result
+      name: postRequestName,
     })
-    console.log("nothing here!")
-  }
-  const count = await Court.countDocuments()
-  const judges = await Court.find()
-  console.log(count)
-  if (judges) {
-    for (let judge of judges){
-      console.log(judge.name)
-    }
+    console.log("name added")
   }
 }
-action()
 
+async function findEveryone() {
+  return Court.find()
+}
 
+let postRequestName
 
-app.get('/', (req, res) =>{
-  res.send(`here we go ${result}!`)
+app.post("/", (req, res) => {
+  postRequestName = req.body.name
+  addName()
+})
+
+app.get("/", async (req, res) => {
+  const judges = await findEveryone()
+  const namesArray = judges.map(obj => obj.name)
+  res.send(`This everyone on the list: ${namesArray.join(", ")}!`)
 })
