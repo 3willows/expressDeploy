@@ -1,13 +1,21 @@
 require("dotenv").config()
 
-const uri = process.env.DB_URL;
-const localTest = "mongodb://127.0.0.1:27017/test"
-const port = process.env.PORT || 3000;
+const uri = process.env.DB_URL
+const port = process.env.PORT || 3000
 const mongoose = require("mongoose")
 
 async function main() {
-  await mongoose.connect(localTest)
+  try {
+    // tried to manipulate the URL, but unsuccessful
+    await mongoose.connect(uri, {dbName: "sample_analytics"})
+    // mongoose.connection.useDb(databaseName);
+    // const { databases } = await mongoose.connection.listDatabases()
+    // databases.forEach((db) => console.log(db.name))
+  } catch {
+    console.log("error in connecting to database")
+  }
 }
+
 main().catch((err) => console.log(err))
 
 const express = require("express")
@@ -18,19 +26,20 @@ const Schema = mongoose.Schema
 app.use(express.static("public"))
 
 const JudgeSchema = new Schema({
-  name: String
+  limit: Number,
 })
 
-const Court = mongoose.model("Judges", JudgeSchema)
+const Court = mongoose.model("accounts", JudgeSchema)
 
 async function action() {
   const count = await Court.countDocuments()
   const oneJudge = await Court.findOne()
   console.log(count)
-  console.log(oneJudge.name)
+  if (oneJudge) {
+    console.log(oneJudge.name)
+  }
 }
 action()
-
 
 app.listen(port, () => console.log(`Server ready on port ${port}.`))
 
