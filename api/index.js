@@ -10,7 +10,12 @@ app.use(express.json())
 
 app.listen(port, () => console.log(`Server ready on port ${port}.`))
 
+let result
 
+app.post('/', (req, res) => {
+  result = req.body.name
+  console.log(result)
+})
 const uri = process.env.DB_URL
 const mongoose = require("mongoose")
 
@@ -32,23 +37,25 @@ const JudgeSchema = new Schema({
 
 const Court = mongoose.model("legal", JudgeSchema)
 
-let result = "no result"
-
 async function action() {
+  if (result) {
+    Court.create({
+      name : result
+    })
+    console.log("nothing here!")
+  }
   const count = await Court.countDocuments()
-  const oneJudge = await Court.findOne()
+  const judges = await Court.find()
   console.log(count)
-  if (oneJudge) {
-    console.log(oneJudge.name)
-    result = oneJudge.name
+  if (judges) {
+    for (let judge of judges){
+      console.log(judge.name)
+    }
   }
 }
 action()
 
-app.post('/', (req, res) => {
-  result = req.body.name
-  console.log(result)
-})
+
 
 app.get('/', (req, res) =>{
   res.send(`here we go ${result}!`)
