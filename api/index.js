@@ -1,54 +1,36 @@
 require("dotenv").config()
+
 const uri = process.env.DB_URL;
+const localTest = "mongodb://127.0.0.1:27017/test"
 const port = process.env.PORT || 3000;
+const mongoose = require("mongoose")
+
+async function main() {
+  await mongoose.connect(localTest)
+}
+main().catch((err) => console.log(err))
 
 const express = require("express")
-const mongoose = require("mongoose")
 const app = express()
+
+const Schema = mongoose.Schema
 
 app.use(express.static("public"))
 
-main().catch((err) => console.log(err))
-
-async function main() {
-  await mongoose.connect(uri)
-}
-
-const kittySchema = new mongoose.Schema({
-  name: String,
+const JudgeSchema = new Schema({
+  name: String
 })
 
-kittySchema.methods.speak = function speak() {
-  const greeting = this.name
-    ? "Meow my name is " + this.name
-    : "I don't have a name"
-  console.log(greeting)
+const Court = mongoose.model("Judges", JudgeSchema)
+
+async function action() {
+  const count = await Court.countDocuments()
+  const oneJudge = await Court.findOne()
+  console.log(count)
+  console.log(oneJudge.name)
 }
+action()
 
-const Kitten = mongoose.model("Kitten", kittySchema)
-
-const silence = new Kitten({ name: "Silence" })
-console.log(silence.name) // 'Silence'
-
-const fluffy = new Kitten({ name: "Blair" })
-fluffy.speak() // "Meow my name is Blair"
-
-// async function doSomething() {
-//   await fluffy.save()
-// }
-// doSomething()
-
-let numOfEntries;
-
-Kitten.countDocuments().then((count) => {
-	numOfEntries = count
-	console.log(count)})
-
-app.get("/", function (req, res) {
-  res.send(
-    `Hello!  I am a deployed express App!  Hello to ${fluffy.name}!  There are ${numOfEntries} documents in the Kittens collection.`
-  )
-})
 
 app.listen(port, () => console.log(`Server ready on port ${port}.`))
 
