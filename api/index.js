@@ -1,5 +1,6 @@
 require("dotenv").config()
 const uri = process.env.DB_URL;
+const port = process.env.PORT || 3000;
 
 const express = require("express")
 const mongoose = require("mongoose")
@@ -49,7 +50,6 @@ app.get("/", function (req, res) {
   )
 })
 
-// need to remove this line when deploying
-// app.listen(3000, () => console.log("Server ready on port 3000."))
+app.listen(port, () => console.log(`Server ready on port ${port}.`))
 
 module.exports = app
