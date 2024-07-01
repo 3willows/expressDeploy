@@ -1,4 +1,5 @@
 require("dotenv").config()
+const uri = process.env.DB_URL;
 
 const express = require("express")
 const mongoose = require("mongoose")
@@ -9,7 +10,7 @@ app.use(express.static("public"))
 main().catch((err) => console.log(err))
 
 async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/test")
+  await mongoose.connect(uri)
 }
 
 const kittySchema = new mongoose.Schema({
@@ -49,6 +50,6 @@ app.get("/", function (req, res) {
 })
 
 // need to remove this line when deploying
-app.listen(3000, () => console.log("Server ready on port 3000."))
+// app.listen(3000, () => console.log("Server ready on port 3000."))
 
 module.exports = app
