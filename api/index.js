@@ -1,16 +1,22 @@
 require("dotenv").config()
 
+const port = process.env.PORT
+
+const express = require("express")
+const app = express()
+
+app.use(express.static("public"))
+app.use(express.json())
+
+app.listen(port, () => console.log(`Server ready on port ${port}.`))
+
+
 const uri = process.env.DB_URL
-const port = process.env.PORT || 3000
 const mongoose = require("mongoose")
 
 async function main() {
   try {
-    // tried to manipulate the URL, but unsuccessful
-    await mongoose.connect(uri, {dbName: "sample_analytics"})
-    // mongoose.connection.useDb(databaseName);
-    // const { databases } = await mongoose.connection.listDatabases()
-    // databases.forEach((db) => console.log(db.name))
+    await mongoose.connect(uri, {dbName: "people"})
   } catch {
     console.log("error in connecting to database")
   }
@@ -18,18 +24,15 @@ async function main() {
 
 main().catch((err) => console.log(err))
 
-const express = require("express")
-const app = express()
-
 const Schema = mongoose.Schema
 
-app.use(express.static("public"))
-
 const JudgeSchema = new Schema({
-  limit: Number,
+  name: String,
 })
 
-const Court = mongoose.model("accounts", JudgeSchema)
+const Court = mongoose.model("legal", JudgeSchema)
+
+let result = "no result"
 
 async function action() {
   const count = await Court.countDocuments()
@@ -37,10 +40,16 @@ async function action() {
   console.log(count)
   if (oneJudge) {
     console.log(oneJudge.name)
+    result = oneJudge.name
   }
 }
 action()
 
-app.listen(port, () => console.log(`Server ready on port ${port}.`))
+app.post('/', (req, res) => {
+  result = req.body.name
+  console.log(result)
+})
 
-module.exports = app
+app.get('/', (req, res) =>{
+  res.send(`here we go ${result}!`)
+})
