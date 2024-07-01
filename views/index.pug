@@ -1,0 +1,12 @@
+html
+  head
+    title= title
+  body
+    h1 Submit a JSON Object
+    form(action="/", method="POST", enctype="application/json")
+      input(type="text", name="name", placeholder="Name")
+      button(type="submit") Submit
+    p List of people
+    ul  
+      each val in judges
+        li= val
