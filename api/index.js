@@ -20,7 +20,7 @@ const kittySchema = new mongoose.Schema({
 
 kittySchema.methods.speak = function speak() {
   const greeting = this.name
-    ? "Meow name is " + this.name
+    ? "Meow my name is " + this.name
     : "I don't have a name"
   console.log(greeting)
 }
@@ -31,12 +31,12 @@ const silence = new Kitten({ name: "Silence" })
 console.log(silence.name) // 'Silence'
 
 const fluffy = new Kitten({ name: "Blair" })
-fluffy.speak() // "Meow name is fluffy"
+fluffy.speak() // "Meow my name is Blair"
 
-async function doSomething() {
-  await fluffy.save()
-}
-doSomething()
+// async function doSomething() {
+//   await fluffy.save()
+// }
+// doSomething()
 
 let numOfEntries;
 
